@@ -1,8 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { ActivityIndicator } from 'react-native';
-
+import {
+  ActivityIndicator,
+  TouchableHighlight,
+  Button,
+  Text,
+} from 'react-native';
+import { WebView } from 'react-native-webview';
 import api from '../../services/api';
 
 import {
@@ -46,29 +51,29 @@ export default class User extends Component {
 
   handlePage = async () => {
     const { page, starsEnded } = this.state;
-
+    /*
+      StarEnd representa o fim da lista de stars
+      para evitar chamadas desnecessárias a api
+    */
     if (starsEnded === true) {
       return false;
     }
-
     await this.setState({ page: page + 1 });
     await this.loadStars();
   };
 
   loadStars = async () => {
     const { stars, page } = this.state;
-
     const { navigation } = this.props;
     const user = navigation.getParam('user');
-
     const response = await api.get(`/users/${user.login}/starred?page=${page}`);
-
     if (!!response.data === false || response.data.length <= 0) {
       return this.setState({ starsEnded: true });
     }
-
     await this.setState({ stars: [...stars, ...response.data] });
   };
+
+  handleNavigate = data => { };
 
   render() {
     const { stars, loading } = this.state;
@@ -92,7 +97,7 @@ export default class User extends Component {
               data={stars}
               keyExtractor={(star, index) => `${String(star.id)}_${index}_star`}
               renderItem={({ item }) => (
-                <Starred>
+                <Starred onPress={() => this.handleNavigate(item)}>
                   <OwnerAvatar source={{ uri: item.owner.avatar_url }} />
                   <Info>
                     <Title>{item.name}</Title>
