@@ -33,6 +33,7 @@ export default class User extends Component {
 
   state = {
     stars: [],
+    starsEnded: false,
     loading: false,
     page: 1,
   };
@@ -44,21 +45,31 @@ export default class User extends Component {
     const { navigation } = this.props;
     const user = navigation.getParam('user');
 
-    const response = await api.get(`/users/${user.login}/starred?page=${page}`);
+    const response = await api.get(`/users/${user.login}/starred`);
 
     this.setState({ stars: response.data, loading: false });
   }
 
   loadStars = async () => { };
 
-  componentDidUpdate(_, prevState) {
-    if (prevState !== this.state) {
+  handlePage = async () => {
+    const { page, stars, starsEnded } = this.state;
+    if (starsEnded === true) {
+      return false;
     }
-  }
 
-  handlePage = () => {
-    const { page } = this.state;
-    this.setState({ page: page + 1 });
+    await this.setState({ page: page + 1 });
+
+    const { navigation } = this.props;
+    const user = navigation.getParam('user');
+
+    const response = await api.get(`/users/${user.login}/starred?page=${page}`);
+
+    if (!!response.data === false || response.data.length <= 0) {
+      return this.setState({ starsEnded: true });
+    }
+
+    await this.setState({ stars: [...stars, ...response.data] });
   };
 
   render() {
@@ -80,9 +91,8 @@ export default class User extends Component {
           </Loading>
         ) : (
             <Stars
-              onEndReached={this.handlePage}
               data={stars}
-              keyExtractor={star => String(star.id)}
+              keyExtractor={(star, index) => `${String(star.id)}_${index}_star`}
               renderItem={({ item }) => (
                 <Starred>
                   <OwnerAvatar source={{ uri: item.owner.avatar_url }} />
@@ -92,6 +102,7 @@ export default class User extends Component {
                   </Info>
                 </Starred>
               )}
+              onEndReached={this.handlePage}
             />
           )}
       </Container>
