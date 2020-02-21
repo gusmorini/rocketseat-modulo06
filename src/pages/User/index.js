@@ -40,25 +40,23 @@ export default class User extends Component {
 
   async componentDidMount() {
     this.setState({ loading: true });
-    const { page } = this.state;
-
-    const { navigation } = this.props;
-    const user = navigation.getParam('user');
-
-    const response = await api.get(`/users/${user.login}/starred`);
-
-    this.setState({ stars: response.data, loading: false });
+    await this.loadStars();
+    this.setState({ loading: false });
   }
 
-  loadStars = async () => { };
-
   handlePage = async () => {
-    const { page, stars, starsEnded } = this.state;
+    const { page, starsEnded } = this.state;
+
     if (starsEnded === true) {
       return false;
     }
 
     await this.setState({ page: page + 1 });
+    await this.loadStars();
+  };
+
+  loadStars = async () => {
+    const { stars, page } = this.state;
 
     const { navigation } = this.props;
     const user = navigation.getParam('user');
