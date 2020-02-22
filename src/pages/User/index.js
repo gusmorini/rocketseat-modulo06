@@ -75,7 +75,10 @@ export default class User extends Component {
 
   handleNavigate = user => {
     const { navigation } = this.props;
-    navigation.navigate('Profile', { user });
+    navigation.navigate('Profile', {
+      name: user.name,
+      login: user.owner.login,
+    });
   };
 
   render() {
@@ -97,6 +100,8 @@ export default class User extends Component {
           </Loading>
         ) : (
             <Stars
+              onEndReachedThreshold={0.2} // carrega mais itens quando chegar em 20% do fim
+              onEndReached={this.handlePage} // carrega mais itens
               data={stars}
               keyExtractor={(star, index) => `${String(star.id)}_${index}_star`}
               renderItem={({ item }) => (
@@ -108,7 +113,6 @@ export default class User extends Component {
                   </Info>
                 </Starred>
               )}
-              onEndReached={this.handlePage}
             />
           )}
       </Container>
