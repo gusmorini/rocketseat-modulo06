@@ -13,12 +13,11 @@ export default class Profile extends Component {
   async componentDidMount() {
     const { navigation } = this.props;
     const { name, login } = await navigation.getParam('data');
-    const uri = `https://github.com/${login}/${name}`;
-    this.setState({ uri });
+    this.setState({ uri: `https://github.com/${login}/${name}` });
   }
 
   render() {
-    const { name, login, uri } = this.state;
+    const { uri } = this.state;
     return <WebView style={{ flex: 1 }} source={{ uri }} />;
   }
 }
