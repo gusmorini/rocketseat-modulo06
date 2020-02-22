@@ -3,30 +3,22 @@ import { WebView } from 'react-native-webview';
 
 export default class Profile extends Component {
   state = {
-    name: '',
-    login: '',
+    uri: '',
   };
 
   static navigationOptions = ({ navigation }) => ({
-    title: navigation.getParam('name'),
+    title: navigation.getParam('data').name,
   });
 
   async componentDidMount() {
     const { navigation } = this.props;
-    const name = await navigation.getParam('name');
-    const login = await navigation.getParam('login');
-    this.setState({ name, login });
+    const { name, login } = await navigation.getParam('data');
+    const uri = `https://github.com/${login}/${name}`;
+    this.setState({ uri });
   }
 
   render() {
-    const { name, login } = this.state;
-    return (
-      <WebView
-        style={{ flex: 1 }}
-        source={{
-          uri: `https://github.com/${login}/${name}`,
-        }}
-      />
-    );
+    const { name, login, uri } = this.state;
+    return <WebView style={{ flex: 1 }} source={{ uri }} />;
   }
 }

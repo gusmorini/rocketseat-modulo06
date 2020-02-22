@@ -75,10 +75,8 @@ export default class User extends Component {
 
   handleNavigate = user => {
     const { navigation } = this.props;
-    navigation.navigate('Profile', {
-      name: user.name,
-      login: user.owner.login,
-    });
+    const data = { name: user.name, login: user.owner.login };
+    navigation.navigate('Profile', { data });
   };
 
   render() {
