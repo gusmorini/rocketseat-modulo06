@@ -73,7 +73,10 @@ export default class User extends Component {
     await this.setState({ stars: [...stars, ...response.data] });
   };
 
-  handleNavigate = data => { };
+  handleNavigate = user => {
+    const { navigation } = this.props;
+    navigation.navigate('Profile', { user });
+  };
 
   render() {
     const { stars, loading } = this.state;

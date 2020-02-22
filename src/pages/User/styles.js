@@ -48,7 +48,6 @@ export const Starred = styled.TouchableOpacity`
   margin-bottom: 20px;
   flex-direction: row;
   align-items: center;
-  border: 1px solid red;
 `;
 
 export const OwnerAvatar = styled.Image`
