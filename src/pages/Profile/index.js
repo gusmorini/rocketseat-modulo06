@@ -7,7 +7,7 @@ function Profile({ navigation }) {
   return (
     <WebView
       style={{ flex: 1 }}
-      source={{ uri: `https://github.com/${user.owner.login}` }}
+      source={{ uri: `https://github.com/${user.owner.login}/${user.name}` }}
     />
   );
 }
